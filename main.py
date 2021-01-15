@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import re
-
+import json
 # generate password
 import random
 
@@ -39,18 +39,27 @@ def save():
     email = email_entry.get()
     email_not_valid = check_email(email)
     password = password_entry.get()
+    new_data = {website: {
+        "email": email,
+        "password":password
+    }}
     if email_not_valid:
         messagebox.showerror(title="email", message="Invalid Email")
     elif len(website) == 0 or len(password) == 0 or len(email) == 0:
         messagebox.showerror(title="email", message="Password, Email and website are Mandatory fields")
     else:
-        is_ok = messagebox.askokcancel(title=website, message=f"These are the details entered: \nEmail: {email} \n"
-                                                              f"Password: {password}\n is it to save?")
-        if is_ok:
-            with open("data.text", "a") as data_file:
-                data_file.write(f"{website} | {email} | {password}\n")
-                website_entry.delete(0, END)
-                password_entry.delete(0, END)
+        with open("data.json", "r") as data_file:
+            # How to update the json data
+            # reading the old data
+            data = json.load(data_file)
+            # updating old data with new one
+            data.update(new_data)
+
+        with open("data.json", "w") as data_file:
+            # saving the update data
+            json.dump(data, data_file, indent=4)
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 
 window = Tk()
