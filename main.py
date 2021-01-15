@@ -33,6 +33,23 @@ def check_email(email):
         return False
 
 
+# find password function
+def find_password():
+    website = website_entry.get()
+    try:
+        with open("data.json") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showinfo(title="Error", message="No data file found")
+    else:
+        if website in data:
+            email = data[website]["email"]
+            password = data[website]["password"]
+            messagebox.showinfo(title=website, message=f"Email : {email}\nPassword: {password}")
+        else:
+            messagebox.showinfo(title="Error", message=f"No details found for the {website} entered")
+
+
 # save to the file
 def save():
     website = website_entry.get()
@@ -41,7 +58,7 @@ def save():
     password = password_entry.get()
     new_data = {website: {
         "email": email,
-        "password":password
+        "password": password
     }}
     if email_not_valid:
         messagebox.showerror(title="email", message="Invalid Email")
@@ -87,19 +104,21 @@ password_label = Label(text="Password", bg="white")
 password_label.grid(row=3, column=0)
 
 # Entries
-website_entry = Entry(width=45)
-website_entry.grid(row=1, column=1, columnspan=2)
+website_entry = Entry(width=25)
+website_entry.grid(row=1, column=1)
 website_entry.focus()
 email_entry = Entry(width=45)
 email_entry.grid(row=2, column=1, columnspan=2)
 email_entry.insert(0, "testing@hotmail.com")
-password_entry = Entry(width=26)
+password_entry = Entry(width=25)
 password_entry.grid(row=3, column=1)
 
 # buttons
 generate_password_button = Button(text="Generate Password", width=15, command=generate_password)
 generate_password_button.grid(row=3, column=2)
-add_button = Button(text="Add", width=36, command=save)
+search_button = Button(text="Search", width=15, command=find_password)
+search_button.grid(row=1, column=2)
+add_button = Button(text="Add", width=38, command=save)
 add_button.grid(row=4, column=1, columnspan=2)
 
 window.mainloop()
